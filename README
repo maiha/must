@@ -1,0 +1,99 @@
+Must
+====
+
+add Object#must method to constrain its origin and conversions
+
+
+Testing Methods
+===============
+
+be      : check whether object equals to the argument
+kind_of : check whether object is a kind of the argument
+coerced : check whether object can be coerced to the argument
+blank   : check whether object is blank?
+exist   : check whether object is not nil (NOTE: false is ok)
+
+
+Logical Methods
+===============
+
+not : logical NOT
+
+
+Nop Methods
+===========
+
+a  : return self
+an : return self
+
+These effect nothing but exist only for English grammar.
+
+
+Basic Examples
+==============
+
+# test its value exactly
+1.must.be 1              # => 1
+[1,2,3].must.be [1,2,3]  # => [1,2,3]
+
+# exceptions
+1.must.be []             # Must::Invalid exception
+1.must.be([]) {:ng}      # => :ng
+1.must.be(1) {:ng}       # => 1
+
+# as default value
+name = params[:name].must.not.be.blank{ "No name" }
+
+# existing test
+1.must.exist             # => 1
+nil.must.exist           # Must::Invalid exception
+false.must.exist         # => false
+
+# test class : ensures that a class of the object is one of given arguments
+1.must.be.kind_of(Integer)         # => 1
+1.must.be.kind_of(Integer, Array)  # => 1
+[].must.be.kind_of(Integer, Array) # => []
+1.must.be.kind_of(String, Array)   # Must::Invalid: expected String/Array but got Fixnum
+
+# coercing : looks like kind_of except converting its value if possible
+1.must.be.coerced(Integer, String => proc{|val| val.to_i})    # => 1
+"1".must.be.coerced(Integer, String => proc{|val| val.to_i})  # => 1
+"1".must.be.coerced(Integer, String => :to_i)                 # => 1     (NOTE: inline Symbol means sending the method)
+"1".must.be.coerced(Integer, Symbol, String => proc{:to_i})   # => :to_i (NOTE: use proc to return Symbol itself)
+
+
+Actual Examples
+===============
+
+normal code:
+
+  def set_reader(reader)
+    if reader.is_a?(CSV::Reader)
+      @reader = reader
+    elsif file.is_a?(String)
+      @reader = CSV::Reader.create(i)
+    elsif file.is_a?(Pathname)
+      @reader = CSV::Reader.create(reader.read)
+    else
+      raise 'invalid reader'
+    end
+  end
+
+refactor above code with must plugin
+
+  def set_reader(reader)
+    @reader = reader.must.be.coerced(CSV::Reader, Pathname=>:read, String=>{|i| CSV::Reader.create(i)}) {raise 'invalid reader'}
+  end
+
+
+Install
+=======
+
+http://github.com/maiha/must
+
+
+Author
+======
+
+maiha@wota.jp
+
