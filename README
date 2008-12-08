@@ -65,29 +65,55 @@ false.must.exist         # => false
 Actual Examples
 ===============
 
-normal code:
+1)
 
-  def set_reader(reader)
-    if reader.is_a?(CSV::Reader)
-      @reader = reader
-    elsif file.is_a?(String)
-      @reader = CSV::Reader.create(i)
-    elsif file.is_a?(Pathname)
-      @reader = CSV::Reader.create(reader.read)
-    else
-      raise 'invalid reader'
+  normal code:
+
+    def set_reader(reader)
+      if reader.is_a?(CSV::Reader)
+        @reader = reader
+      elsif file.is_a?(String)
+        @reader = CSV::Reader.create(i)
+      elsif file.is_a?(Pathname)
+        @reader = CSV::Reader.create(reader.read)
+      else
+        raise 'invalid reader'
+      end
+    end
+
+  refactor above code with must plugin
+ 
+    def set_reader(reader)
+      @reader = reader.must.be.coerced(CSV::Reader, Pathname=>:read, String=>{|i| CSV::Reader.create(i)}) {raise 'invalid reader'}
+    end
+
+2)
+
+  class DateFolder
+    def initialize(date)
+      @date = date.must.be.coerced(Date, String=>proc{|i| Date.new(*i.scan(/\d+/).map{|i|i.to_i})})
     end
   end
 
-refactor above code with must plugin
+  # this can accept both formats
 
-  def set_reader(reader)
-    @reader = reader.must.be.coerced(CSV::Reader, Pathname=>:read, String=>{|i| CSV::Reader.create(i)}) {raise 'invalid reader'}
-  end
+  DateFolder.new Date.today
+  DateFolder.new "2008-12-9"
 
 
 Install
 =======
+
+gem install maiha-must
+# add source http://gems.github.com
+
+% irb -r rubygems -r must
+irb(main):001:0> 1.must.be 1
+=> 1
+
+
+Github
+======
 
 http://github.com/maiha/must
 
