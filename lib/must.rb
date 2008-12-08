@@ -7,3 +7,6 @@ module Must
     Rule.new(self)
   end
 end
+
+require File.dirname(__FILE__) + '/must/rule'
+Object.__send__ :include, Must

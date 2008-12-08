@@ -1,3 +1,5 @@
+require 'set'
+
 module Must
   class Rule
     attr_reader :object
@@ -24,7 +26,7 @@ module Must
     end
 
     def empty(&block)
-      valid?(object.blank?, &block)
+      valid?(object.empty?, &block)
     end
 
     def blank(&block)
@@ -38,7 +40,7 @@ module Must
 
     def kind_of(*targets)
       valid?(targets.any?{|klass| object.is_a? klass}) {
-        target = targets.map(&:name).join('/')
+        target = targets.map{|i| i.name}.join('/')
         raise Invalid, "expected #{target} but got #{object.class}"
       }
     end

@@ -20,10 +20,12 @@ class MustTest < Test::Unit::TestCase
   end
 
   def test_must_not_be_blank
-    assert_equal "ok", "ok".must.not.be.blank
-    assert_equal "ok", "ok".must.not.be.blank {"ng"}
-    assert_equal "ng",   "".must.not.be.blank {"ng"}
-    assert_raises(Invalid) {"".must.not.be.blank}
+    if Object.instance_methods.include?("blank?")
+      assert_equal "ok", "ok".must.not.be.blank
+      assert_equal "ok", "ok".must.not.be.blank {"ng"}
+      assert_equal "ng",   "".must.not.be.blank {"ng"}
+      assert_raises(Invalid) {"".must.not.be.blank}
+    end
   end
 end
 
