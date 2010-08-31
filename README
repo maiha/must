@@ -3,6 +3,13 @@ Must
 
 add Object#must method to constrain its origin and conversions
 
+  # can write like this
+    num = params[:num].to_i.must.match(1..300) {10}
+
+  # rather than
+    num = params[:num].to_i
+    num = 10 unless (1..300) === num
+
 
 Testing Methods
 ===============
