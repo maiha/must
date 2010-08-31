@@ -80,5 +80,7 @@ module Must
         end
       retry
     end
+
+    alias :match :one_of
   end
 end
