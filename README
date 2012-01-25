@@ -15,7 +15,7 @@ Testing Methods
 ===============
 
 be      : check whether object equals to the argument
-kind_of : check whether object is a kind of the argument
+kind_of : check whether object is a kind of the arguments
 coerced : check whether object can be coerced to the argument
 blank   : check whether object is blank?
 exist   : check whether object is not nil (NOTE: false is ok)
@@ -61,6 +61,9 @@ false.must.exist         # => false
 1.must.be.kind_of(Integer, Array)  # => 1
 [].must.be.kind_of(Integer, Array) # => []
 1.must.be.kind_of(String, Array)   # Must::Invalid: expected String/Array but got Fixnum
+
+# must(*args) is a syntax sugar for kind_of
+1.must(Integer)          # same as "1.must.be.kind_of(Integer)"
 
 # coercing : looks like kind_of except converting its value if possible
 1.must.be.coerced(Integer, String => proc{|val| val.to_i})    # => 1

@@ -3,8 +3,12 @@ module Must
   class Invalid < StandardError; end
   class ShouldNotEmpty  < Invalid; end
 
-  def must
-    Rule.new(self)
+  def must(*args)
+    if args.size > 0
+      Rule.new(self).be.kind_of(*args)
+    else
+      Rule.new(self)
+    end
   end
 end
 

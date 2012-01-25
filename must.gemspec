@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "must"
-  s.version = "0.2.1"
-  s.date = "2010-09-01"
+  s.version = "0.2.2"
+  s.date = "2012-01-25"
   s.summary = ""
   s.email = "maiha@wota.jp"
   s.homepage = "http://github.com/maiha/must"

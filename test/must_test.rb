@@ -27,6 +27,12 @@ class MustTest < Test::Unit::TestCase
       assert_raises(Invalid) {"".must.not.be.blank}
     end
   end
+
+  def test_must_accepts_args_as_kind_of
+    assert_equal "ok", "ok".must(String)
+    assert_raises(Invalid) {"ok".must(Integer)}
+    assert_equal "ok", "ok".must(Integer, String)
+  end
 end
 
 
