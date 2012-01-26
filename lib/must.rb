@@ -1,3 +1,5 @@
+require "must/version"
+
 # Must
 module Must
   class Invalid < StandardError; end
@@ -12,5 +14,5 @@ module Must
   end
 end
 
-require File.dirname(__FILE__) + '/must/rule'
+require "must/rule"
 Object.__send__ :include, Must
