@@ -10,9 +10,14 @@ add Object#must method to constrain its origin and conversions
     num = params[:num].to_i
     num = 10 unless (1..300) === num
 
+and has duck features
 
-Testing Methods
-===============
+    1.must.duck?(:to_s)  # => true
+    io.must.duck(:write) { io.extend Writable }
+
+
+Asking Methods
+==============
 
 be      : check whether object equals to the argument
 kind_of : check whether object is a kind of the arguments
@@ -34,6 +39,15 @@ a  : return self
 an : return self
 
 These effect nothing but exist only for English grammar.
+
+
+Duck Methods
+============
+duck("foo")  : check whether object responds to "foo" method.
+duck(:foo)   : same above
+duck(".foo") : same above
+duck("#foo") : check whether object has "foo" instance method. (tested only in class/module)
+duck?(...)   : acts same as "duck", but this returns a just boolean
 
 
 Basic Examples
@@ -114,8 +128,7 @@ Actual Examples
 Install
 =======
 
-gem install maiha-must
-# add source http://gems.github.com
+gem install must
 
 % irb -r rubygems -r must
 irb(main):001:0> 1.must.be 1

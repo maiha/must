@@ -48,6 +48,7 @@ module Must
     def one_of(target, &block)
       valid?(target === @object, &block)
     end
+    alias :match :one_of
 
     def valid?(condition, &block)
       if condition ^ @not
@@ -81,6 +82,31 @@ module Must
       retry
     end
 
-    alias :match :one_of
+    def duck(method_name, &block)
+      valid?(duck?(method_name), &block)
+    end
+
+    def duck?(method_name)
+      case method_name.to_s
+      when /^\./ then method_defined?($')
+      when /^#/  then instance_method_defined?($')
+      else       ;    method_defined?(method_name)
+      end
+    end
+
+    private
+      def instance?
+        @object.class.to_s !~ /\A(Class|Module)\Z/o
+      end
+
+      def instance_method_defined?(method_name)
+        return false if instance?
+        !! @object.instance_methods.find { |m| m.to_s == method_name.to_s}
+      end
+
+      def method_defined?(method_name)
+        @object.respond_to?(method_name)
+      end
+
   end
 end
