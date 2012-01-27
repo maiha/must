@@ -1,7 +1,6 @@
 Must
 ====
-
-add Object#must method to constrain its origin and conversions
+  add Object#must method to constrain its origin and conversions
 
   # can write like this
     num = params[:num].to_i.must.match(1..300) {10}
@@ -10,80 +9,93 @@ add Object#must method to constrain its origin and conversions
     num = params[:num].to_i
     num = 10 unless (1..300) === num
 
-and has duck features
+  and has duck-type features
 
     1.must.duck?(:to_s)  # => true
     io.must.duck(:write) { io.extend Writable }
 
+  and has struct assetions
+
+    pages = [{:name=>"...", :url=>"...",} ...]
+    pages.must.struct([Hash])
+
 
 Asking Methods
 ==============
-
-be      : check whether object equals to the argument
-kind_of : check whether object is a kind of the arguments
-coerced : check whether object can be coerced to the argument
-blank   : check whether object is blank?
-exist   : check whether object is not nil (NOTE: false is ok)
+  be      : check whether object equals to the argument
+  kind_of : check whether object is a kind of the arguments
+  coerced : check whether object can be coerced to the argument
+  blank   : check whether object is blank?
+  exist   : check whether object is not nil (NOTE: false is ok)
 
 
 Logical Methods
 ===============
-
-not : logical NOT
+  not : logical NOT
 
 
 Nop Methods
 ===========
-
-a  : return self
-an : return self
+  a  : return self
+  an : return self
 
 These effect nothing but exist only for English grammar.
 
 
 Duck Methods
 ============
-duck("foo")  : check whether object responds to "foo" method.
-duck(:foo)   : same above
-duck(".foo") : same above
-duck("#foo") : check whether object has "foo" instance method. (tested only in class/module)
-duck?(...)   : acts same as "duck", but this returns a just boolean
+  duck("foo")  : check whether object responds to "foo" method.
+  duck(:foo)   : same above
+  duck(".foo") : same above
+  duck("#foo") : check whether object has "foo" instance method. (tested only in class/module)
+  duck?(...)   : acts same as "duck", but this returns a just boolean
+
+
+Struct Methods
+============
+  struct(...)  : check whether object has a same struct with ...
+  struct?(...) : acts same as "struct", but this returns a just boolean
 
 
 Basic Examples
 ==============
 
 # test its value exactly
-1.must.be 1              # => 1
-[1,2,3].must.be [1,2,3]  # => [1,2,3]
+  1.must.be 1              # => 1
+  [1,2,3].must.be [1,2,3]  # => [1,2,3]
 
 # exceptions
-1.must.be []             # Must::Invalid exception
-1.must.be([]) {:ng}      # => :ng
-1.must.be(1) {:ng}       # => 1
+  1.must.be []             # Must::Invalid exception
+  1.must.be([]) {:ng}      # => :ng
+  1.must.be(1) {:ng}       # => 1
 
 # as default value
-name = params[:name].must.not.be.blank{ "No name" }
+  name = params[:name].must.not.be.blank{ "No name" }
 
 # existing test
-1.must.exist             # => 1
-nil.must.exist           # Must::Invalid exception
-false.must.exist         # => false
+  1.must.exist             # => 1
+  nil.must.exist           # Must::Invalid exception
+  false.must.exist         # => false
 
 # test class : ensures that a class of the object is one of given arguments
-1.must.be.kind_of(Integer)         # => 1
-1.must.be.kind_of(Integer, Array)  # => 1
-[].must.be.kind_of(Integer, Array) # => []
-1.must.be.kind_of(String, Array)   # Must::Invalid: expected String/Array but got Fixnum
+  1.must.be.kind_of(Integer)         # => 1
+  1.must.be.kind_of(Integer, Array)  # => 1
+  [].must.be.kind_of(Integer, Array) # => []
+  1.must.be.kind_of(String, Array)   # Must::Invalid: expected String/Array but got Fixnum
 
 # must(*args) is a syntax sugar for kind_of
-1.must(Integer)          # same as "1.must.be.kind_of(Integer)"
+  1.must(Integer)          # same as "1.must.be.kind_of(Integer)"
 
 # coercing : looks like kind_of except converting its value if possible
-1.must.be.coerced(Integer, String => proc{|val| val.to_i})    # => 1
-"1".must.be.coerced(Integer, String => proc{|val| val.to_i})  # => 1
-"1".must.be.coerced(Integer, String => :to_i)                 # => 1     (NOTE: inline Symbol means sending the method)
-"1".must.be.coerced(Integer, Symbol, String => proc{:to_i})   # => :to_i (NOTE: use proc to return Symbol itself)
+  1.must.be.coerced(Integer, String => proc{|val| val.to_i})    # => 1
+  "1".must.be.coerced(Integer, String => proc{|val| val.to_i})  # => 1
+  "1".must.be.coerced(Integer, String => :to_i)                 # => 1     (NOTE: inline Symbol means sending the method)
+  "1".must.be.coerced(Integer, Symbol, String => proc{:to_i})   # => :to_i (NOTE: use proc to return Symbol itself)
+
+# struct assertions
+
+  uris = build_uris		# ex) [{:host=>"...", :port=>"..."}, ...]
+  uris.must.struct([Hash])
 
 
 Actual Examples
@@ -125,24 +137,31 @@ Actual Examples
   DateFolder.new "2008-12-9"
 
 
+NOTE
+====
+"must(*args)" is a shortcut for not "be(*args)" but "kind_of(*args)" and "struct(*args)".
+
+  1.must(1)        # => 1
+  1.must(Fixnum)   # => 1
+  1.must(2)        # => 1    # NOTE
+  1.must.be(2)     # Invalid
+  Fixnum.must(1)   # => Fixnum
+
+
 Install
 =======
+  gem install must
 
-gem install must
-
-% irb -r rubygems -r must
-irb(main):001:0> 1.must.be 1
-=> 1
+  % irb -r rubygems -r must
+  irb(main):001:0> 1.must.be 1
+  => 1
 
 
 Github
 ======
-
-http://github.com/maiha/must
+  http://github.com/maiha/must
 
 
 Author
 ======
-
-maiha@wota.jp
-
+  maiha@wota.jp

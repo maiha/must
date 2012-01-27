@@ -32,6 +32,9 @@ class MustTest < Test::Unit::TestCase
     assert_equal "ok", "ok".must(String)
     assert_raises(Invalid) {"ok".must(Integer)}
     assert_equal "ok", "ok".must(Integer, String)
+
+    # NOTE: this passes because 1(integer) is a kind of 2(integer)
+    assert_equal 1, 1.must(2)
   end
 end
 

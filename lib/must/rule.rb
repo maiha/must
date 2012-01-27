@@ -1,4 +1,5 @@
 require 'set'
+require "must/same_struct"
 
 module Must
   class Rule
@@ -39,8 +40,9 @@ module Must
     end
 
     def kind_of(*targets)
-      valid?(targets.any?{|klass| object.is_a? klass}) {
-        target = targets.map{|i| i.name}.join('/')
+      bool = targets.any?{|klass| is_a?(klass)}
+      valid?(bool) {
+        target = targets.map{|i| instance?(i) ? i.class.name : i.name}.join('/')
         raise Invalid, "expected #{target} but got #{object.class}"
       }
     end
@@ -55,14 +57,6 @@ module Must
         object
       else
         block_or_throw(&block)
-      end
-    end
-
-    def block_or_throw(&block)
-      if block
-        block.call
-      else
-        raise Invalid
       end
     end
 
@@ -94,18 +88,42 @@ module Must
       end
     end
 
+    def struct?(target)
+      Must::SameStruct.check(@object, target)
+    end
+
+    def struct(target, &block)
+      valid?(struct?(target), &block)
+    end
+
     private
-      def instance?
-        @object.class.to_s !~ /\A(Class|Module)\Z/o
+      def instance?(obj)
+        obj.class.to_s !~ /\A(Class|Module)\Z/o
       end
 
       def instance_method_defined?(method_name)
-        return false if instance?
+        return false if instance?(@object)
         !! @object.instance_methods.find { |m| m.to_s == method_name.to_s}
       end
 
       def method_defined?(method_name)
         @object.respond_to?(method_name)
+      end
+
+      def is_a?(klass)
+        if instance?(klass)
+          struct?(klass)
+        else
+          @object.is_a? klass
+        end
+      end
+
+      def block_or_throw(&block)
+        if block
+          block.call
+        else
+          raise Invalid
+        end
       end
 
   end
