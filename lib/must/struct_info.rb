@@ -14,30 +14,25 @@ module Must
     module Browser
       include Classify
 
-      def pp(obj)
+      def struct(obj)
         case obj
         when Hash
-          if obj.empty?
-            '{}'
-          else
-            key, val = obj.first
-            '{%s=>%s}' % [pp(key), pp(val)]
-          end
+          Hash[*(obj.first || []).map{|i| struct(i)}]
         when Array
-          '[%s]' % obj.map{|i| pp(obj)}.join(",")
+          obj.empty? ? [] : [struct(obj.first)]
         else
-          classify(obj).to_s
+          classify(obj)
         end
       end
 
       def types(obj)
         case obj
         when Hash
-          return ([Hash] + (obj.first || []).map{|i| types(i)}.flatten).uniq
+          ([Hash] + (obj.first || []).map{|i| types(i)}.flatten).uniq
         when Array
-          return ([Array] + obj.map{|i| types(i)}.flatten).uniq
+          ([Array] + obj.map{|i| types(i)}.flatten).uniq
         else
-          return [classify(obj)]
+          [classify(obj)]
         end
       end
 
@@ -91,12 +86,16 @@ module Must
       Browser.types(@obj)
     end
 
-    def inspect
-      Browser.pp(@obj)
+    def struct
+      Browser.struct(@obj)
     end
 
     def same?(dst)
       Browser.same?(@obj, dst)
+    end
+
+    def inspect
+      struct.inspect
     end
   end
 end
