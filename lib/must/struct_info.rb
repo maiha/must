@@ -14,12 +14,12 @@ module Must
     module Browser
       include Classify
 
-      def struct(obj)
+      def compact(obj)
         case obj
         when Hash
-          Hash[*(obj.first || []).map{|i| struct(i)}]
+          Hash[*(obj.first || []).map{|i| compact(i)}]
         when Array
-          obj.empty? ? [] : [struct(obj.first)]
+          obj.empty? ? [] : [compact(obj.first)]
         else
           classify(obj)
         end
@@ -86,8 +86,8 @@ module Must
       Browser.types(@obj)
     end
 
-    def struct
-      Browser.struct(@obj)
+    def compact
+      Browser.compact(@obj)
     end
 
     def same?(dst)
@@ -95,7 +95,7 @@ module Must
     end
 
     def inspect
-      struct.inspect
+      compact.inspect
     end
   end
 end

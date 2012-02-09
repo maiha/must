@@ -27,17 +27,17 @@ class StructInfoTest < Test::Unit::TestCase
   ######################################################################
   ### struct
 
-  def test_struct
-    assert_equal(Fixnum, Must::StructInfo.new(1).struct)
-    assert_equal({}, Must::StructInfo.new({}).struct)
-    assert_equal({String=>Fixnum}, Must::StructInfo.new({"a"=>1}).struct)
-    assert_equal([{String=>Float}], Must::StructInfo.new([{"1"=>0.25}]).struct)
-    assert_equal({String=>{String=>[{Symbol=>Fixnum}]}}, Must::StructInfo.new({"1.1" => {"jp"=>[{:a=>0},{:b=>2}]}}).struct)
+  def test_compact
+    assert_equal(Fixnum, Must::StructInfo.new(1).compact)
+    assert_equal({}, Must::StructInfo.new({}).compact)
+    assert_equal({String=>Fixnum}, Must::StructInfo.new({"a"=>1}).compact)
+    assert_equal([{String=>Float}], Must::StructInfo.new([{"1"=>0.25}]).compact)
+    assert_equal({String=>{String=>[{Symbol=>Fixnum}]}}, Must::StructInfo.new({"1.1" => {"jp"=>[{:a=>0},{:b=>2}]}}).compact)
   end
 
-  def test_struct_compacts_array_into_first_element
-    assert_equal [Fixnum], Must::StructInfo.new([1, "a"]).struct
-    assert_equal [String], Must::StructInfo.new(["a", 1]).struct
+  def test_compact_array_into_first_element
+    assert_equal [Fixnum], Must::StructInfo.new([1, "a"]).compact
+    assert_equal [String], Must::StructInfo.new(["a", 1]).compact
   end
 
   ######################################################################

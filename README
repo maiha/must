@@ -148,6 +148,15 @@ NOTE
   Fixnum.must(1)   # => Fixnum
 
 
+Bundled Class
+=============
+
+  struct = Must::StructInfo.new({"1.1" => {"jp"=>[{:a=>0},{:b=>2}]}})
+  struct.types   # => [Hash, String, Array, Symbol, Fixnum]
+  struct.compact # => {String=>{String=>[{Symbol=>Fixnum}]}}
+  struct.inspect # => "{String=>{String=>[{Symbol=>Fixnum}]}}"
+
+
 TODO
 ====
   * add proper error messages
