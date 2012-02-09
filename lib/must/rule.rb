@@ -1,5 +1,5 @@
 require 'set'
-require "must/same_struct"
+require "must/struct_info"
 
 module Must
   class Rule
@@ -90,7 +90,7 @@ module Must
     end
 
     def struct?(target)
-      Must::SameStruct.check(@object, target)
+      Must::StructInfo.new(@object).same?(target)
     end
 
     def struct(target, &block)
