@@ -148,6 +148,12 @@ NOTE
   Fixnum.must(1)   # => Fixnum
 
 
+TODO
+====
+  * add proper error messages
+  * struct information provider
+
+
 Install
 =======
   gem install must

@@ -39,12 +39,13 @@ module Must
       be(nil, &block)
     end
 
-    def kind_of(*targets)
+    def kind_of(*targets, &block)
       bool = targets.any?{|klass| is_a?(klass)}
-      valid?(bool) {
+      block ||= proc {
         target = targets.map{|i| instance?(i) ? i.class.name : i.name}.join('/')
         raise Invalid, "expected #{target} but got #{object.class}"
       }
+      valid?(bool, &block)
     end
 
     def one_of(target, &block)
