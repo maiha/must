@@ -25,4 +25,11 @@ class StructInfoTest < Test::Unit::TestCase
                  Must::StructInfo.new({:a=>{"1"=>0.25}}).types
   end
 
+  ######################################################################
+  ### pp
+
+  def test_inspect
+    assert_equal "Fixnum", Must::StructInfo.new(1).inspect
+    assert_equal "{Symbol=>{String=>Float}}", Must::StructInfo.new({:a=>{"1"=>0.25}}).inspect
+  end
 end

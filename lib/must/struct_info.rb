@@ -14,6 +14,22 @@ module Must
     module Browser
       include Classify
 
+      def pp(obj)
+        case obj
+        when Hash
+          if obj.empty?
+            '{}'
+          else
+            key, val = obj.first
+            '{%s=>%s}' % [pp(key), pp(val)]
+          end
+        when Array
+          '[%s]' % obj.map{|i| pp(obj)}.join(",")
+        else
+          classify(obj).to_s
+        end
+      end
+
       def types(obj)
         case obj
         when Hash
@@ -73,6 +89,10 @@ module Must
 
     def types
       Browser.types(@obj)
+    end
+
+    def inspect
+      Browser.pp(@obj)
     end
 
     def same?(dst)
