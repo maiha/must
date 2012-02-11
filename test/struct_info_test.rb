@@ -29,7 +29,9 @@ class StructInfoTest < Test::Unit::TestCase
 
   def test_compact
     assert_equal(Fixnum, Must::StructInfo.new(1).compact)
-    assert_equal({}, Must::StructInfo.new({}).compact)
+    assert_equal(Hash, Must::StructInfo.new({}).compact)
+    assert_equal(Array, Must::StructInfo.new([]).compact)
+    assert_equal([Fixnum], Must::StructInfo.new([1]).compact)
     assert_equal({String=>Fixnum}, Must::StructInfo.new({"a"=>1}).compact)
     assert_equal([{String=>Float}], Must::StructInfo.new([{"1"=>0.25}]).compact)
     assert_equal({String=>{String=>[{Symbol=>Fixnum}]}}, Must::StructInfo.new({"1.1" => {"jp"=>[{:a=>0},{:b=>2}]}}).compact)
@@ -45,7 +47,9 @@ class StructInfoTest < Test::Unit::TestCase
 
   def test_inspect
     assert_equal "Fixnum", Must::StructInfo.new(1).inspect
-    assert_equal "{}", Must::StructInfo.new({}).inspect
+    assert_equal "Hash", Must::StructInfo.new({}).inspect
+    assert_equal "Array", Must::StructInfo.new([]).inspect
+    assert_equal "[Fixnum]", Must::StructInfo.new([1]).inspect
     assert_equal "{String=>Fixnum}", Must::StructInfo.new({"a"=>1}).inspect
     assert_equal "[{String=>Float}]", Must::StructInfo.new([{"1"=>0.25}]).inspect
     assert_equal "{String=>{String=>[{Symbol=>Fixnum}]}}", Must::StructInfo.new({"1.1" => {"jp"=>[{:a=>0},{:b=>2}]}}).inspect

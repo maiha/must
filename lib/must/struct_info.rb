@@ -17,9 +17,9 @@ module Must
       def compact(obj)
         case obj
         when Hash
-          Hash[*(obj.first || []).map{|i| compact(i)}]
+          obj.empty? ? Hash : Hash[*obj.first.map{|i| compact(i)}]
         when Array
-          obj.empty? ? [] : [compact(obj.first)]
+          obj.empty? ? Array : [compact(obj.first)]
         else
           classify(obj)
         end
