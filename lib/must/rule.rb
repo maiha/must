@@ -89,6 +89,16 @@ module Must
       end
     end
 
+    def duck!(method_name, &block)
+      if duck?(method_name)
+        @object.__send__(method_name)
+      elsif block_given?
+        block.call
+      else
+        raise Invalid, "#{method_name} is not defined"
+      end
+    end
+
     def struct?(target)
       Must::StructInfo.new(@object).same?(target)
     end

@@ -80,4 +80,18 @@ class DuckTest < Test::Unit::TestCase
     assert_equal false, ClassFoo.must.duck?("#bar")
     assert_equal false, ModuleFoo.must.duck?("#bar")
   end
+
+  def test_duck_bang
+    assert_equal "1", 1.must.duck!("to_s")
+  end
+
+  def test_duck_bang_raises_if_not_defined
+    assert_raise(Must::Invalid) {
+      ClassFoo.must.duck!("foo")
+    }
+  end
+
+  def test_duck_bang_calls_block_if_not_defined
+    assert_equal 2, 1.must.duck!("to_xxx") { 2 }
+  end
 end
