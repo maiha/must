@@ -49,6 +49,7 @@ Duck Methods
   duck(".foo") : same above
   duck("#foo") : check whether object has "foo" instance method. (tested only in class/module)
   duck?(...)   : acts same as "duck", but this returns a just boolean
+  duck!("foo") : if foo exists, call it. otherwise raises Invalid
 
 
 Struct Methods
