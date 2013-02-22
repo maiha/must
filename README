@@ -19,6 +19,10 @@ Must
     pages = [{:name=>"...", :url=>"...",} ...]
     pages.must.struct([Hash])
 
+  You want Boolean class? try this!
+
+    flag = hash["flag"].must(true, false)
+
 
 Asking Methods
 ==============
