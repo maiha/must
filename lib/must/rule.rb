@@ -42,7 +42,8 @@ module Must
     def kind_of(*targets, &block)
       bool = targets.any?{|klass| is_a?(klass)}
       block ||= proc {
-        target = targets.map{|i| instance?(i) ? i.class.name : i.name}.join('/')
+        target = targets.map{|i| instance?(i) ? i.class.name : i.name}.join('|')
+        target = "(#{target})" if targets.size > 1
         raise Invalid, "expected #{target} but got #{object.class}"
       }
       valid?(bool, &block)
@@ -104,6 +105,7 @@ module Must
     end
 
     def struct(target, &block)
+      block ||= proc{ raise Invalid, Must::StructInfo::Differ.new(@object, target, "").execute.to_s }
       valid?(struct?(target), &block)
     end
 
