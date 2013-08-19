@@ -1,5 +1,4 @@
 require 'set'
-require "must/struct_info"
 
 module Must
   class Rule
@@ -105,7 +104,7 @@ module Must
     end
 
     def struct(target, &block)
-      block ||= proc{ raise Invalid, Must::StructInfo::Differ.new(@object, target, "").execute.to_s }
+      block ||= proc{ raise Invalid, Must::Differ.new(@object, target, "").execute.to_s }
       valid?(struct?(target), &block)
     end
 

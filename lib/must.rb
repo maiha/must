@@ -15,4 +15,7 @@ module Must
 end
 
 require "must/rule"
+require "must/differ"
+require "must/struct_info"
+
 Object.__send__ :include, Must
