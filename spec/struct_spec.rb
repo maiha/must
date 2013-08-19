@@ -3,9 +3,8 @@ require 'spec_helper'
 describe Must do
   let(:obj) { {"xyz" => ["a","b"] } }
 
-  specify "show more info about struct differs" do
-    lambda {
-      obj.must.struct({String => [Hash]})
-    }.should raise_error(/expected \{String=>\[Hash\]/)
-  end
+  subject { lambda { obj.must.struct({String => [Hash]}) } }
+
+  it { should raise_error(Must::StructMismatch) }
+  it { should raise_error(/\{String=>\[Hash\]\}/) }
 end

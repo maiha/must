@@ -3,7 +3,9 @@ require "must/version"
 # Must
 module Must
   class Invalid < StandardError; end
-  class ShouldNotEmpty  < Invalid; end
+  class ClassMismatch  < Invalid; end
+  class StructMismatch < Invalid; end
+  class ValueMismatch  < Invalid; end
 
   def must(*args, &block)
     if args.size > 0

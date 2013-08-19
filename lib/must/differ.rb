@@ -6,66 +6,67 @@ module Must
       @a, @b, @path = a, b, path
     end
 
-    def same_float?(a, b)
-      al = a.to_s.sub(/\.(\d{1,})$/, '\1').length
-      bl = b.to_s.sub(/\.(\d{1,})$/, '\1').length
-      if al > 8 and bl > 8
-        len = 6 # [al, bl].min - 2
-        a.to_s == b.to_s or
-          a.round(len).to_s == b.round(len).to_s
-      else
-        a.to_s == b.to_s or
-          (a - b).abs <= Float::EPSILON * [a.abs, b.abs].max
-      end
+    def eq_float?(a, b)
+      (a - b).abs <= 0.0000001
     end
 
-    def same_object?(a, b)
+    def eq_object?(a, b)
       a == b
     end
 
     def execute!
       unless a.class == b.class
-        failed("%s expected [%s], but got [%s]" % [path, a.class, b.class])
+        failed ClassMismatch, "%s expected [%s], but got [%s]" % [path, a.class, b.class]
       end
 
       if a.is_a?(Array)
         max = [a.size, b.size].max
-        (0...max).each do |i|
-          Differ.new(a[i], b[i], "#{path}[#{i}]").execute
+        max.times do |i|
+          Differ.new(a[i], b[i], "#{path}[#{i}]").execute!
         end
         return true
       end
 
       if a.is_a?(Hash)
         (a.keys | b.keys).each do |key|
-          Differ.new(a[key], b[key], "#{path}[#{key}]").execute
+          Differ.new(a[key], b[key], "#{path}[#{key}]").execute!
         end
         return true
       end
 
-      same = 
+      eq = 
         case a
-        when Float; same_float?(a, b)
-        else      ; same_object?(a, b)
+        when Float; eq_float?(a, b)
+        else      ; eq_object?(a, b)
         end
 
-      unless same
+      unless eq
         av = a.inspect.split(//)[0..50].join
         bv = b.inspect.split(//)[0..50].join
-        failed("%s expected %s[%s], but got %s[%s]" % [path, av, a.class, bv, a.class])
+        failed ValueMismatch, "%s expected %s(%s), but got %s(%s)" % [path, av, a.class, bv, a.class]
+      end
+
+      return true
+
+    rescue Must::ClassMismatch => err
+      if a.class == b.class
+        as = Must::StructInfo.new(a).inspect
+        bs = Must::StructInfo.new(b).inspect
+        raise Must::StructMismatch, "%s expected %s, but got %s" % [path, as, bs]
+      else
+        raise
       end
     end
 
     def execute
       execute!
-      return nil
-    rescue => err
-      return err
+      return true
+    rescue Must::Invalid
+      return false
     end
 
-    private
-      def failed(msg)
-        raise msg
-      end
+    def failed(klass, msg)
+      raise klass, msg
+    end
   end
 end

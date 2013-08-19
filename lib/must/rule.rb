@@ -104,7 +104,7 @@ module Must
     end
 
     def struct(target, &block)
-      block ||= proc{ raise Invalid, Must::Differ.new(@object, target, "").execute.to_s }
+      block ||= proc{ Must::Differ.new(@object, target, "").execute! }
       valid?(struct?(target), &block)
     end
 
