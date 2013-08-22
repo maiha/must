@@ -75,56 +75,6 @@ module Must
       extend self
     end
 
-    class Differ
-      attr_reader :a, :b, :path
-
-      def initialize(a, b, path)
-        @a, @b, @path = a, b, path
-      end
-
-      def execute!
-        sa = StructInfo::new(a).inspect
-        sb = StructInfo::new(b).inspect
-
-        unless sa == sb
-          failed("%s expected %s, but got %s" % [path, sb, sa])
-        end
-
-        if a.class == Array
-          max = [a.size, b.size].max
-          (0...max).each do |i|
-            Differ.new(a[i], b[i], "#{path}[#{i}]").execute!
-          end
-          return true
-        end
-
-        if a.class == Hash
-          (a.keys | b.keys).each do |key|
-            Differ.new(a[key], b[key], "#{path}[#{key}]").execute!
-          end
-          return true
-        end
-
-        unless a == b
-          failed("%s expected %s, but got %s" % [path, a.inspect, b.inspect])
-        end
-
-        return nil
-      end
-
-      def execute
-        execute!
-        return nil
-      rescue => err
-        return err
-      end
-
-      private
-        def failed(msg)
-          raise msg
-        end
-    end
-
     ######################################################################
     ### StructInfo
 

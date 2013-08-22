@@ -1,5 +1,4 @@
 require 'set'
-require "must/struct_info"
 
 module Must
   class Rule
@@ -40,7 +39,13 @@ module Must
     end
 
     def kind_of(*targets, &block)
-      bool = targets.any?{|klass| is_a?(klass)}
+      if instance?(@object)
+        bool = targets.any?{|klass| is_a?(klass)}
+      else
+        # check ancestors when klass
+        bool = (@object.ancestors & targets).any?
+      end
+      
       block ||= proc {
         target = targets.map{|i| instance?(i) ? i.class.name : i.name}.join('|')
         target = "(#{target})" if targets.size > 1
@@ -105,7 +110,7 @@ module Must
     end
 
     def struct(target, &block)
-      block ||= proc{ raise Invalid, Must::StructInfo::Differ.new(@object, target, "").execute.to_s }
+      block ||= proc{ Must::Differ.new(@object, target, "").execute! }
       valid?(struct?(target), &block)
     end
 
