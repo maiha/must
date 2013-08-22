@@ -78,5 +78,19 @@ describe Must::Rule, "must" do
       "ok".must.be.kind_of(String,Integer).should == "ok"
       ng { "ok".must.be.kind_of(Integer, Array) }
     end
+
+    context "(class)" do
+      module KindOfTest
+        module Core; end
+        class Base
+          include Core
+        end
+      end
+
+      specify "check ancestors when module given" do
+        ok { KindOfTest::Base.must.be.kind_of(KindOfTest::Core) }
+        ng { KindOfTest::Base.must.be.kind_of(Numeric) }
+      end
+    end
   end
 end
