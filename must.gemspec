@@ -5,6 +5,7 @@ require "must/version"
 Gem::Specification.new do |s|
   s.name        = "must"
   s.version     = Must::VERSION
+  s.license     = 'MIT'
   s.authors     = ["maiha"]
   s.email       = ["maiha@wota.jp"]
   s.homepage    = "http://github.com/maiha/must"
