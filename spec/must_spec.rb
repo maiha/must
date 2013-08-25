@@ -33,4 +33,17 @@ describe Must, "must" do
     end
   end
 
+  context "true.must(bool)" do
+    specify do
+      ok { true.must(true) }
+      ok { true.must(true,false) }
+      ng { true.must(false) }
+      ng { "xx".must(true,false) }
+
+      ok { false.must(false) }
+      ok { false.must(true,false) }
+      ng { false.must(true) }
+      ng { "xxx".must(true,false) }
+    end
+  end
 end
