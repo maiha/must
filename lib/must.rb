@@ -9,6 +9,13 @@ module Must
 
   def must(*args, &block)
     if args.size > 0
+      # Fast type checking
+      args.each{|klass|
+        return self if self.class == klass  # 1.must(Fixnum)
+        return self if self       == klass  # flag.must(true, false)
+      }
+
+      # Or, check it in a slow but strict way
       Rule.new(self).be.kind_of(*args, &block)
     else
       Rule.new(self)
