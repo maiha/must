@@ -110,7 +110,7 @@ module Must
     end
 
     def struct(target, &block)
-      block ||= proc{ Must::Differ.new(@object, target, "").execute! }
+      block ||= proc{ raise Must::StructMismatch, Differ.new(@object, target, "").message }
       valid?(struct?(target), &block)
     end
 
