@@ -125,7 +125,7 @@ module Must
       end
 
       def method_defined?(method_name)
-        @object.respond_to?(method_name)
+        @object.respond_to?(method_name, true)
       end
 
       def is_a?(klass)
